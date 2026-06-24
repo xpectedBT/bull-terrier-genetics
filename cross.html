@@ -30,12 +30,21 @@ h1 { margin-bottom:10px; }
 .row {
   display:flex;
   gap:10px;
-  margin-bottom:10px;
+  margin-bottom:12px;
   flex-wrap:wrap;
 }
 
 select {
-  padding:5px;
+  padding:6px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  min-width:220px;
+}
+
+.label {
+  font-size:12px;
+  color:#777;
+  margin-bottom:4px;
 }
 
 .result {
@@ -56,7 +65,24 @@ select {
 }
 
 .nav {
-  margin-bottom:20px;
+  margin-bottom:15px;
+}
+
+.lang-switch {
+  margin-bottom:15px;
+}
+
+button {
+  padding:6px 10px;
+  border-radius:6px;
+  border:1px solid #ccc;
+  background:white;
+  cursor:pointer;
+}
+
+button.active {
+  background:#8B3A2A;
+  color:white;
 }
 </style>
 </head>
@@ -64,132 +90,136 @@ select {
 <body>
 
 <div class="nav">
-  <a href="index.html">← Back to loci view</a>
+  <a href="index.html">← Back</a>
 </div>
 
-<h1>Simulate your litter</h1>
+<div class="lang-switch">
+  <button id="btn-en" onclick="setLang('en')" class="active">EN</button>
+  <button id="btn-fr" onclick="setLang('fr')">FR</button>
+</div>
+
+<h1 id="title">Simulate your litter</h1>
 
 <div class="section">
+  <h3 id="parent1Label">Parent 1</h3>
+  <div class="row" id="p1"></div>
 
-<h3>Parent 1</h3>
-<div class="row" id="p1"></div>
-
-<h3>Parent 2</h3>
-<div class="row" id="p2"></div>
-
+  <h3 id="parent2Label">Parent 2</h3>
+  <div class="row" id="p2"></div>
 </div>
 
 <div class="section">
-<h3>Results</h3>
-<div id="results"></div>
+  <h3 id="resultsLabel">Results</h3>
+  <div id="results"></div>
 </div>
 
 <script>
 
-// genotype options (same as your main app)
+// ✅ LANGUAGE
+let currentLang = "en";
+
+const UI = {
+  en: {
+    title: "Simulate your litter",
+    parent1: "Parent 1",
+    parent2: "Parent 2",
+    results: "Results"
+  },
+  fr: {
+    title: "Simuler votre portée",
+    parent1: "Parent 1",
+    parent2: "Parent 2",
+    results: "Résultats"
+  }
+};
+
+// ✅ LABELS
+const LABELS = {
+  en: {
+    AyAy: "AyAy / Red parent",
+    Ayat: "Ayat / Red parent carrier Tri",
+    atat: "atat / Tricolor parent",
+
+    kbrkbr: "kbrkbr / Brindle parent",
+    kbrky:  "kbrky / Brindle parent carrier non-brindle",
+    kyky:   "kyky / Non-brindle parent",
+
+    sisi: "sisi / Solid parent",
+    sisw: "sisw / Colored & White parent",
+    swsw: "swsw / White parent"
+  },
+  fr: {
+    AyAy: "AyAy / Parent fauve",
+    Ayat: "Ayat / Parent fauve porteur Tri",
+    atat: "atat / Parent tricolore",
+
+    kbrkbr: "kbrkbr / Parent bringé",
+    kbrky:  "kbrky / Parent bringé porteur non-bringé",
+    kyky:   "kyky / Parent non-bringé",
+
+    sisi: "sisi / Parent solide",
+    sisw: "sisw / Parent coloré & blanc",
+    swsw: "swsw / Parent blanc"
+  }
+};
+
+// ✅ LOCI (E removed)
 const loci = [
   ["AyAy","Ayat","atat"],
   ["kbrkbr","kbrky","kyky"],
-  ["EmEm","EmE","EE"],
   ["sisi","sisw","swsw"]
 ];
 
+// ✅ BUILD SELECTORS
 function buildSelectors(containerId) {
   const container = document.getElementById(containerId);
-  loci.forEach((locus, i) => {
+
+  loci.forEach((locus) => {
+
+    const wrap = document.createElement("div");
+
     const sel = document.createElement("select");
+
     locus.forEach(g => {
       const opt = document.createElement("option");
       opt.value = g;
-      opt.textContent = g;
+      opt.textContent = LABELS[currentLang][g];
       sel.appendChild(opt);
     });
+
     sel.addEventListener("change", compute);
-    container.appendChild(sel);
+
+    wrap.appendChild(sel);
+    container.appendChild(wrap);
   });
 }
 
-buildSelectors("p1");
-buildSelectors("p2");
+// ✅ CLEAN BUILD
+function rebuild() {
+  document.getElementById("p1").innerHTML = "";
+  document.getElementById("p2").innerHTML = "";
 
+  buildSelectors("p1");
+  buildSelectors("p2");
+}
+
+// ✅ GENETICS HELPERS
 function explode(geno) {
-  return geno.length === 4 ? [geno.slice(0,2), geno.slice(2)] : [geno];
+  return [geno.slice(0,2), geno.slice(2)];
 }
 
 function combine(g1, g2) {
-  return [g1[0], g2[0]].sort().join('');
+  return [g1, g2].sort().join('');
 }
 
-// phenotype simplification
+// ✅ PHENOTYPE
 function phenotype(g) {
 
   let color = "";
   let swatch = "#ccc";
 
-  // base (A)
-  if(g[0].includes("Ay")) { color = "Red"; swatch = "#C49A6C"; }
-  else { color = "Black & tan"; swatch = "#2C2C2C"; }
-
-  // brindle
-  if(g[1].includes("kbr")) {
-    color = "Brindle";
-    swatch = "#7B5230";
-  }
-
-  // white spotting
-  if(g[3] === "swsw") {
-    color = "White";
-    swatch = "#FAFAF8";
-  }
-  else if(g[3] === "sisw") {
-    color += " & white";
-    swatch = "#D4763A";
-  }
-
-  return {label: color, swatch};
-}
-
-function compute() {
-
-  const p1 = [...document.querySelectorAll("#p1 select")].map(s=>s.value);
-  const p2 = [...document.querySelectorAll("#p2 select")].map(s=>s.value);
-
-  let results = {};
-
-  for(let i=0;i<16;i++){
-
-    let child = [];
-
-    for(let j=0;j<4;j++){
-      const g1 = explode(p1[j]);
-      const g2 = explode(p2[j]);
-      child.push(combine(g1[Math.floor(Math.random()*g1.length)], g2[Math.floor(Math.random()*g2.length)]));
-    }
-
-    const ph = phenotype(child);
-    if(!results[ph.label]) results[ph.label]={count:0, sw:ph.swatch};
-    results[ph.label].count++;
-  }
-
-  const resDiv = document.getElementById("results");
-  resDiv.innerHTML = "";
-
-  Object.entries(results).forEach(([label,data])=>{
-    const div = document.createElement("div");
-    div.className="result";
-    div.innerHTML = `
-      <div class="swatch" style="background:${data.sw}"></div>
-      <strong>${Math.round(data.count/16*100)}%</strong> — ${label}
-    `;
-    resDiv.appendChild(div);
-  });
-
-}
-
-compute();
-
-</script>
-
-</body>
-</html>
-``
+  // A-series
+  if(g[0].includes("Ay")) {
+    color = currentLang === "fr" ? "Fauve" : "Red";
+    swatch = "#C49A6C";
+  } else {
