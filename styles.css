@@ -387,3 +387,42 @@
     border-top: 1px solid var(--rule);
     margin: 0.5rem 0 1rem;
   }
+
+/* ===== Cross page fixes ===== */
+
+.section {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.row select {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--rule);
+  background: var(--cream);
+}
+
+.result {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid var(--rule);
+}
