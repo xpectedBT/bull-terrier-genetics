@@ -1,23 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Full Cross Simulator</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 
-<style>
-body {
-  font-family: Inter, sans-serif;
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="font-family: Inter, sans-serif;
   background:#F7F3ED;
   color:#1C1917;
   padding:20px;
   max-width:900px;
   margin:auto;
 }
-
-h1 { margin-bottom:10px; }
 
 .section {
   background:white;
@@ -36,15 +31,7 @@ h1 { margin-bottom:10px; }
 
 select {
   padding:6px;
-  border-radius:6px;
-  border:1px solid #ccc;
   min-width:220px;
-}
-
-.label {
-  font-size:12px;
-  color:#777;
-  margin-bottom:4px;
 }
 
 .result {
@@ -63,48 +50,25 @@ select {
   border-radius:5px;
   border:1px solid #aaa;
 }
-
-.nav {
-  margin-bottom:15px;
-}
-
-.lang-switch {
-  margin-bottom:15px;
-}
-
-button {
-  padding:6px 10px;
-  border-radius:6px;
-  border:1px solid #ccc;
-  background:white;
-  cursor:pointer;
-}
-
-button.active {
-  background:#8B3A2A;
-  color:white;
-}
 </style>
 </head>
 
 <body>
 
-<div class="nav">
-  <a href="index.html">← Back</a>
-</div>
+<adex.html← Back</a>
 
-<div class="lang-switch">
-  <button id="btn-en" onclick="setLang('en')" class="active">EN</button>
-  <button id="btn-fr" onclick="setLang('fr')">FR</button>
-</div>
+<br><br>
+
+<button onclick="setLang('en')">EN</button>
+<button onclick="setLang('fr')">FR</button>
 
 <h1 id="title">Simulate your litter</h1>
 
 <div class="section">
-  <h3 id="parent1Label">Parent 1</h3>
+  <h3 id="p1Label">Parent 1</h3>
   <div class="row" id="p1"></div>
 
-  <h3 id="parent2Label">Parent 2</h3>
+  <h3 id="p2Label">Parent 2</h3>
   <div class="row" id="p2"></div>
 </div>
 
@@ -115,25 +79,12 @@ button.active {
 
 <script>
 
-// ✅ LANGUAGE
+// ✅ DEBUG (you should see this in console)
+console.log("✅ JS LOADED");
+
+// LANGUAGE
 let currentLang = "en";
 
-const UI = {
-  en: {
-    title: "Simulate your litter",
-    parent1: "Parent 1",
-    parent2: "Parent 2",
-    results: "Results"
-  },
-  fr: {
-    title: "Simuler votre portée",
-    parent1: "Parent 1",
-    parent2: "Parent 2",
-    results: "Résultats"
-  }
-};
-
-// ✅ LABELS
 const LABELS = {
   en: {
     AyAy: "AyAy / Red parent",
@@ -141,11 +92,11 @@ const LABELS = {
     atat: "atat / Tricolor parent",
 
     kbrkbr: "kbrkbr / Brindle parent",
-    kbrky:  "kbrky / Brindle parent carrier non-brindle",
+    kbrky:  "kbrky / Brindle parent carrier",
     kyky:   "kyky / Non-brindle parent",
 
     sisi: "sisi / Solid parent",
-    sisw: "sisw / Colored & White parent",
+    sisw: "sisw / Colored & white",
     swsw: "swsw / White parent"
   },
   fr: {
@@ -154,7 +105,7 @@ const LABELS = {
     atat: "atat / Parent tricolore",
 
     kbrkbr: "kbrkbr / Parent bringé",
-    kbrky:  "kbrky / Parent bringé porteur non-bringé",
+    kbrky:  "kbrky / Parent bringé porteur",
     kyky:   "kyky / Parent non-bringé",
 
     sisi: "sisi / Parent solide",
@@ -163,38 +114,33 @@ const LABELS = {
   }
 };
 
-// ✅ LOCI (E removed)
+// LOCI (3 only)
 const loci = [
   ["AyAy","Ayat","atat"],
   ["kbrkbr","kbrky","kyky"],
   ["sisi","sisw","swsw"]
 ];
 
-// ✅ BUILD SELECTORS
+// BUILD SELECTORS
 function buildSelectors(containerId) {
   const container = document.getElementById(containerId);
 
-  loci.forEach((locus) => {
-
-    const wrap = document.createElement("div");
-
-    const sel = document.createElement("select");
+  loci.forEach(locus => {
+    const select = document.createElement("select");
 
     locus.forEach(g => {
       const opt = document.createElement("option");
       opt.value = g;
       opt.textContent = LABELS[currentLang][g];
-      sel.appendChild(opt);
+      select.appendChild(opt);
     });
 
-    sel.addEventListener("change", compute);
-
-    wrap.appendChild(sel);
-    container.appendChild(wrap);
+    select.addEventListener("change", compute);
+    container.appendChild(select);
   });
 }
 
-// ✅ CLEAN BUILD
+// REBUILD
 function rebuild() {
   document.getElementById("p1").innerHTML = "";
   document.getElementById("p2").innerHTML = "";
@@ -203,23 +149,96 @@ function rebuild() {
   buildSelectors("p2");
 }
 
-// ✅ GENETICS HELPERS
-function explode(geno) {
-  return [geno.slice(0,2), geno.slice(2)];
+// HELPERS
+function explode(g) {
+  return [g.slice(0,2), g.slice(2)];
 }
 
-function combine(g1, g2) {
-  return [g1, g2].sort().join('');
+function combine(a,b){
+  return [a,b].sort().join('');
 }
 
-// ✅ PHENOTYPE
+// PHENOTYPE
 function phenotype(g) {
 
-  let color = "";
-  let swatch = "#ccc";
+  let color = "Red";
+  let swatch = "#C49A6C";
 
-  // A-series
-  if(g[0].includes("Ay")) {
-    color = currentLang === "fr" ? "Fauve" : "Red";
-    swatch = "#C49A6C";
-  } else {
+  if(!g[0].includes("Ay")) {
+    color = "Tricolor";
+    swatch = "#2C2C2C";
+  }
+
+  if(g[1].includes("kbr")) {
+    color = "Brindle";
+    swatch = "#7B5230";
+  }
+
+  if(g[2] === "swsw") {
+    color = "White";
+    swatch = "#FAFAF8";
+  }
+  else if(g[2] === "sisw") {
+    color += " & white";
+    swatch = "#D4763A";
+  }
+
+  return {label: color, swatch};
+}
+
+// COMPUTE
+function compute() {
+
+  const p1 = [...document.querySelectorAll("#p1 select")].map(s=>s.value);
+  const p2 = [...document.querySelectorAll("#p2 select")].map(s=>s.value);
+
+  let results = {};
+
+  for(let i=0;i<16;i++){
+
+    let child = [];
+
+    for(let j=0;j<3;j++){
+      const g1 = explode(p1[j]);
+      const g2 = explode(p2[j]);
+
+      const a = g1[Math.floor(Math.random()*2)];
+      const b = g2[Math.floor(Math.random()*2)];
+
+      child.push(combine(a,b));
+    }
+
+    const ph = phenotype(child);
+
+    if(!results[ph.label]) results[ph.label]={count:0, sw:ph.swatch};
+    results[ph.label].count++;
+  }
+
+  const res = document.getElementById("results");
+  res.innerHTML = "";
+
+  Object.entries(results).forEach(([label,data])=>{
+    res.innerHTML += `
+      <div class="result">
+        <div class="swatch" style="background:${data.sw}"></div>
+        <strong>${Math.round(data.count/16*100)}%</strong> — ${label}
+      </div>
+    `;
+  });
+}
+
+// LANG SWITCH
+function setLang(lang){
+  currentLang = lang;
+  rebuild();
+  compute();
+}
+
+// INIT
+rebuild();
+compute();
+
+</script>
+
+</body>
+</html>
