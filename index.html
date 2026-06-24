@@ -367,6 +367,23 @@
     gap: 8px;
   }
 
+  .nav-btn {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--rule);
+  background: var(--cream);
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: 0.15s;
+}
+
+.nav-btn:hover {
+  background: var(--cream-dark);
+}
+
+
   .section-label::after {
     content: '';
     flex: 1;
@@ -396,6 +413,10 @@
     <div class="header-eyebrow" id="hdr-eyebrow"></div>
     <h1 id="hdr-title"></h1>
     <p id="hdr-desc"></p>
+    <nav style="margin-top:14px; display:flex; gap:10px;">
+  <a href="index.html" class="nav-btn">Genetics view</a>
+  <a href="cross.html" class="nav-btn">Simulate your litter</a>
+</nav>
   </header>
 </div>
 
