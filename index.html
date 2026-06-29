@@ -400,6 +400,36 @@ function renderAll() {
     }, 0);
   });
 }
+/* ══════════════════════════════════════════
+   RENDER ALL UI
+══════════════════════════════════════════ */
+function renderAll(){
+  const ui = UI[lang];
+  document.getElementById('nav-genetics').textContent  = ui.navGenetics;
+  document.getElementById('nav-litter').textContent    = ui.navLitter;
+  document.getElementById('nav-reverse').textContent   = ui.navReverse;
+  document.getElementById('hdr-eyebrow').textContent   = ui.eyebrow;
+  document.getElementById('hdr-title').textContent     = ui.title;
+  document.getElementById('hdr-desc').textContent      = ui.desc;
+  document.getElementById('card-tag-step1').textContent  = ui.tagStep1;
+  document.getElementById('card-title-step1').textContent = ui.titleStep1;
+  document.getElementById('card-tag-step2').textContent  = ui.tagStep2;
+  document.getElementById('card-title-step2').textContent = ui.titleResults;
+  document.getElementById('label-coloured').textContent  = ui.labelColoured;
+  document.getElementById('label-white').textContent     = ui.labelWhite;
+  document.getElementById('empty-text').textContent      = ui.emptyText;
+  document.getElementById('footer-ref').textContent      = ui.footer;
+  renderGrid('grid-coloured', 'coloured');
+  renderGrid('grid-white',    'white');
+  renderResults();
+}
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+document.getElementById('btn-en').classList.toggle('active', lang==='en');
+document.getElementById('btn-fr').classList.toggle('active', lang==='fr');
+document.documentElement.lang = lang;
 
 renderAll();
 </script>
