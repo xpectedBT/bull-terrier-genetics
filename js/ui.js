@@ -1,13 +1,11 @@
-/* ══════════════════════════════════════════
-   STATE
-══════════════════════════════════════════ */
-
+/* ═══════════════════════════════════════
+   GLOBAL STATE
+═══════════════════════════════════════ */
 let lang = localStorage.getItem('btLang') || 'en';
 
-/* ══════════════════════════════════════════
-   UI TEXT (shared across pages)
-══════════════════════════════════════════ */
-
+/* ═══════════════════════════════════════
+   TEXT (USED ON ALL PAGES)
+═══════════════════════════════════════ */
 const UI = {
   en: {
     navGenetics: 'Colour genetics',
@@ -15,42 +13,67 @@ const UI = {
     navReverse: 'Identify genotype',
 
     eyebrow: 'Genotype Lookup · Coat Colour',
-    title: 'Bull Terrier tools',
-    desc: 'Explore coat colour genetics and genotype predictions.',
+    title: "Identify your dog's genotype",
+    desc: 'Select the coat colour and pattern that matches your dog.',
+
+    tagStep1: 'Step 1',
+    titleStep1: 'What does your dog look like?',
+    tagStep2: 'Step 2',
+    titleResults: 'Possible genotypes',
+
+    labelColoured: 'Coloured & coloured/white dogs',
+    labelWhite: 'White dogs',
+
+    emptyText: 'Select a coat colour above to see the possible genotypes.',
+
+    offspringTitle: 'Offspring potential:',
+    hint: 'These genotype options cannot always be distinguished visually.',
 
     footer: 'Based on Colour in Bull Terriers – Tracey Butchart (2009).'
   },
+
   fr: {
     navGenetics: 'Génétique des couleurs',
     navLitter: 'Simuler une portée',
     navReverse: 'Identifier le génotype',
 
     eyebrow: 'Recherche de génotype · Couleur de robe',
-    title: 'Outils Bull Terrier',
-    desc: 'Explorez la génétique des couleurs et les génotypes.',
+    title: 'Identifier le génotype de votre chien',
+    desc: 'Sélectionnez la couleur et le patron de robe.',
 
-    footer: 'D’après Colour in Bull Terriers – Tracey Butchart (2009).'
+    tagStep1: 'Étape 1',
+    titleStep1: 'À quoi ressemble votre chien ?',
+    tagStep2: 'Étape 2',
+    titleResults: 'Génotypes possibles',
+
+    labelColoured: 'Chiens colorés & colorés/blancs',
+    labelWhite: 'Chiens blancs',
+
+    emptyText: 'Sélectionnez une couleur pour voir les génotypes.',
+
+    offspringTitle: 'Potentiel de descendance :',
+    hint: 'Ces options ne peuvent pas toujours être distinguées visuellement.',
+
+    footer: "D'après Colour in Bull Terriers – Tracey Butchart (2009)."
   }
 };
 
-/* ══════════════════════════════════════════
-   HELPERS (SAFE DOM ACCESS)
-══════════════════════════════════════════ */
-
+/* ═══════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════ */
 function setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
 }
 
-function toggleClass(id, className, condition) {
+function toggleClass(id, cls, cond) {
   const el = document.getElementById(id);
-  if (el) el.classList.toggle(className, condition);
+  if (el) el.classList.toggle(cls, cond);
 }
 
-/* ══════════════════════════════════════════
-   LANGUAGE
-══════════════════════════════════════════ */
-
+/* ═══════════════════════════════════════
+   LANGUAGE SWITCH
+═══════════════════════════════════════ */
 function setLang(newLang) {
   lang = newLang;
   localStorage.setItem('btLang', newLang);
@@ -63,41 +86,39 @@ function setLang(newLang) {
   renderUI();
 }
 
-/* ══════════════════════════════════════════
-   RENDER GLOBAL UI
-══════════════════════════════════════════ */
-
+/* ═══════════════════════════════════════
+   RENDER UI
+═══════════════════════════════════════ */
 function renderUI() {
   const ui = UI[lang];
 
-  // NAV
   setText('nav-genetics', ui.navGenetics);
   setText('nav-litter', ui.navLitter);
   setText('nav-reverse', ui.navReverse);
 
-  // HEADER (if exists)
   setText('hdr-eyebrow', ui.eyebrow);
   setText('hdr-title', ui.title);
   setText('hdr-desc', ui.desc);
 
-  // FOOTER
+  setText('card-tag-step1', ui.tagStep1);
+  setText('card-title-step1', ui.titleStep1);
+  setText('card-tag-step2', ui.tagStep2);
+  setText('card-title-step2', ui.titleResults);
+  setText('label-coloured', ui.labelColoured);
+  setText('label-white', ui.labelWhite);
+  setText('empty-text', ui.emptyText);
+
   setText('footer-ref', ui.footer);
 
-  // 🔌 Hook for page-specific scripts
-  if (typeof window.renderPage === 'function') {
+  // call reverse.js if present
+  if (window.renderPage) {
     window.renderPage();
   }
 }
 
-/* ══════════════════════════════════════════
+/* ═══════════════════════════════════════
    INIT
-══════════════════════════════════════════ */
-
+═══════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
-  toggleClass('btn-en', 'active', lang === 'en');
-  toggleClass('btn-fr', 'active', lang === 'fr');
-
-  document.documentElement.lang = lang;
-
-  renderUI();
+  setLang(lang);
 });
