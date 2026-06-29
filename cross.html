@@ -9,201 +9,472 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 
-  <!-- Shared styles --!>
+  <!-- Shared styles -->
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-<a href="index.html" class="nav-btn">← Back</a>
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <nav class="nav-links">
+      <a class="nav-link" href="index.html" id="nav-genetics"></a>
+      <a class="nav-link active" href="litter.html" id="nav-litter"></a>
+    </nav>
+    <div class="lang-group">
+      <span class="lang-label">Lang</span>
+      <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="btn-fr" onclick="setLang('fr')">FR</button>
+    </div>
+  </div>
+</div>
 
-<br><br>
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="header-eyebrow" id="hdr-eyebrow"></div>
+    <h1 id="hdr-title"></h1>
+    <p id="hdr-desc"></p>
+  </div>
+</div>
 
-<button onclick="setLang('en')">EN</button>
-<button onclick="setLang('fr')">FR</button>
+<main>
+  <!-- PARENTS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-tag" id="card-tag-parents"></span>
+      <span class="card-title" id="card-title-parents"></span>
+    </div>
+    <div class="card-body">
+      <div class="parents-grid">
+        <!-- Parent 1 -->
+        <div class="parent-block">
+          <div class="parent-label" id="p1-label"></div>
+          <div class="locus-row"><div class="locus-row-label" id="p1-a-label"></div><select id="p1-A" onchange="update()"></select></div>
+          <div class="locus-row"><div class="locus-row-label" id="p1-k-label"></div><select id="p1-K" onchange="update()"></select></div>
+          <div class="locus-row"><div class="locus-row-label" id="p1-s-label"></div><select id="p1-S" onchange="update()"></select></div>
+          <div class="dog-preview" id="p1-preview">
+            <svg id="p1-svg" viewBox="0 0 130 90"></svg>
+            <div class="phenotype-badge" id="p1-pheno-label"></div>
+            <div class="genotype-pills" id="p1-geno-pills"></div>
+          </div>
+        </div>
+        <!-- Parent 2 -->
+        <div class="parent-block">
+          <div class="parent-label" id="p2-label"></div>
+          <div class="locus-row"><div class="locus-row-label" id="p2-a-label"></div><select id="p2-A" onchange="update()"></select></div>
+          <div class="locus-row"><div class="locus-row-label" id="p2-k-label"></div><select id="p2-K" onchange="update()"></select></div>
+          <div class="locus-row"><div class="locus-row-label" id="p2-s-label"></div><select id="p2-S" onchange="update()"></select></div>
+          <div class="dog-preview" id="p2-preview">
+            <svg id="p2-svg" viewBox="0 0 130 90"></svg>
+            <div class="phenotype-badge" id="p2-pheno-label"></div>
+            <div class="genotype-pills" id="p2-geno-pills"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<h1 id="title">Simulate your litter</h1>
+  <!-- RESULTS -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-tag" id="card-tag-results"></span>
+      <span class="card-title" id="card-title-results"></span>
+    </div>
+    <div class="card-body">
+      <div class="method-row">
+        <span class="method-label" id="method-label"></span>
+        <button class="method-btn active" id="btn-exact" onclick="setMethod('exact')" ></button>
+        <button class="method-btn" id="btn-sim" onclick="setMethod('sim')"></button>
+      </div>
+      <div class="section-label" id="results-section-label"></div>
+      <div class="results-grid" id="results-grid"></div>
+      <div class="note-box" id="results-note"></div>
+    </div>
+  </div>
+</main>
 
-
-<div class="locus-card">
-  <div class="locus-body">
-
-  <h3 id="p1Label">Parent 1</h3>
-  <div class="parent-row" id="p1"></div>
-
-  <h3 id="p2Label">Parent 2</h3>
-  <div class="parent-row" id="p2"></div>
-</div></div>
-
-
-<div class="locus-card">
-  <div class="locus-body">
-  <h3 id="resultsLabel">Results</h3>
-  <div id="results"></div>
-</div></div>
+<footer id="footer-ref"></footer>
 
 <script>
 
-// ✅ DEBUG (you should see this in console)
-console.log("✅ JS LOADED");
+const DOG_IMAGES = {
+  'red-solid': 'assets/BT_SolidRed.png',
+  'red-white': 'assets/BT_Red_White.png',
+  'tri-solid': 'assets/BT_SolidTri.png',
+  'tri-white': 'assets/BT_Tri.png',
 
-// LANGUAGE
-let currentLang = "en";
+  'brindle-solid': 'assets/BT_SolidBrindle.png',
+  'brindle-white': 'assets/BT_Brindle_White.png',
 
-const LABELS = {
-  en: {
-    AyAy: "AyAy / Red parent",
-    Ayat: "Ayat / Red parent carrier Tri",
-    atat: "atat / Tricolor parent",
+  'black-brindle-solid': 'assets/BT_SolidBlackBrindle.png',
+  'black-brindle-white': 'assets/BT_BlackBrindle.png',
 
-    kbrkbr: "kbrkbr / Brindle parent",
-    kbrky:  "kbrky / Brindle parent carrier",
-    kyky:   "kyky / Non-brindle parent",
+  'white-red': 'assets/BT_white_CarRed.png',
+  'white-tri': 'assets/BT_white_CarTri.png',
+  'white-brindle': 'assets/BT_white_CarBrindle.png',
+  'white-black-brindle': 'assets/BT_white_CarBlackBrindle.png'
+};
 
-    sisi: "sisi / Solid parent",
-    sisw: "sisw / Colored & white",
-    swsw: "swsw / White parent"
+/* ══════════════════════════════════════════
+   TRANSLATIONS
+══════════════════════════════════════════ */
+
+const T = {
+  en:{
+    navGenetics:'Colour genetics', navLitter:'Simulate a litter',
+    eyebrow:'Litter Simulator · Coat Colour',
+    title:'Simulate your litter',
+    desc:'Set the genotype of both parents across three key loci. The tool calculates the exact probability of every possible puppy coat colour.',
+    tagParents:'Step 1', titleParents:'Set parent genotypes',
+    tagResults:'Step 2', titleResults:'Possible puppy outcomes',
+    p1:'Sire (♂)', p2:'Dam (♀)',
+    aLocus:'A-series · Base colour', kLocus:'K-series · Brindle', sLocus:'S-series · White',
+    methodLabel:'Calculation method:',
+    btnExact:'Exact probabilities', btnSim:'Simulate 16 puppies',
+    resultsLabel:'Possible phenotypes',
+    note:'These probabilities are theoretical and apply to large populations. In a real litter of 4–8 puppies, the actual outcome can differ significantly by chance — just like flipping a coin.',
+    noteSimu:'Simulation of 16 random puppies drawn from the genetic probabilities above.',
+    footer:'Based on Colour in Bull Terriers – Part 2 – Inheritance of Colour by Tracey Butchart (2009). Genetic framework: Kerns et al. (2007), Candille et al. (2007), Schmutz & Berryere (2007).',
+    A:{ AyAy:'Ay Ay — Red/fawn (true)',Ayat:'Ay at — Red/fawn (carrier tri)',atat:'at at — Black & tan / tri' },
+    K:{ kbrkbr:'kbr kbr — Brindle (true)',kbrky:'kbr ky — Brindle (carrier)',kyky:'ky ky — Non-brindle' },
+    S:{ sisi:'si si — Solid coloured',sisw:'si sw — Coloured & white',swsw:'sw sw — All white' },
+    phenoLabel(ph){
+      const map={
+        'red-solid':'Red solid','red-white':'Red & white','tri-solid':'Black & tan / tricolour solid','tri-white':'Tricolour & white',
+        'brindle-solid':'Brindle solid','brindle-white':'Brindle & white','black-brindle-solid':'Black brindle solid','black-brindle-white':'Black brindle & white',
+        'white-red':'White (carries red)','white-tri':'White (carries tri)','white-brindle':'White (carries brindle)','white-black-brindle':'White (carries black brindle)',
+      };
+      return map[ph]||ph;
+    },
+    genoDesc(A,K,S){
+      const ab=A==='AyAy'?'Ay Ay':A==='Ayat'?'Ay at':'at at';
+      const kb=K==='kbrkbr'?'kbr kbr':K==='kbrky'?'kbr ky':'ky ky';
+      const sb=S==='sisi'?'si si':S==='sisw'?'si sw':'sw sw';
+      return [ab,kb,sb];
+    },
+    phenoVisible(A,K,S){
+      if(S==='swsw'){if(!A.includes('Ay')&&K.includes('kbr'))return'White (carries black brindle)';if(!A.includes('Ay'))return'White (carries tri)';if(K.includes('kbr'))return'White (carries brindle)';return'White (carries red)';}
+      const base=A.includes('Ay')?'red':'tri';
+      const brindle=K.includes('kbr');
+      const partial=S==='sisw';
+      if(base==='red'&&!brindle)return partial?'Red & white':'Red solid';
+      if(base==='red'&&brindle)return partial?'Brindle & white':'Brindle solid';
+      if(base==='tri'&&!brindle)return partial?'Tricolour & white':'Black & tan / tricolour solid';
+      return partial?'Black brindle & white':'Black brindle solid';
+    }
   },
-  fr: {
-    AyAy: "AyAy / Parent fauve",
-    Ayat: "Ayat / Parent fauve porteur Tri",
-    atat: "atat / Parent tricolore",
-
-    kbrkbr: "kbrkbr / Parent bringé",
-    kbrky:  "kbrky / Parent bringé porteur",
-    kyky:   "kyky / Parent non-bringé",
-
-    sisi: "sisi / Parent solide",
-    sisw: "sisw / Parent coloré & blanc",
-    swsw: "swsw / Parent blanc"
+  fr:{
+    navGenetics:'Génétique des couleurs', navLitter:'Simuler une portée',
+    eyebrow:'Simulateur de portée · Couleur de robe',
+    title:'Simuler votre portée',
+    desc:'Définissez le génotype des deux parents pour les trois loci principaux. L\'outil calcule la probabilité exacte de chaque couleur de robe possible.',
+    tagParents:'Étape 1', titleParents:'Définir les génotypes des parents',
+    tagResults:'Étape 2', titleResults:'Résultats possibles des chiots',
+    p1:'Père (♂)', p2:'Mère (♀)',
+    aLocus:'Série A · Couleur de base', kLocus:'Série K · Bringé', sLocus:'Série S · Blanc',
+    methodLabel:'Méthode de calcul :',
+    btnExact:'Probabilités exactes', btnSim:'Simuler 16 chiots',
+    resultsLabel:'Phénotypes possibles',
+    note:'Ces probabilités sont théoriques et s\'appliquent à de grandes populations. Dans une portée réelle de 4 à 8 chiots, le résultat peut différer significativement par hasard — comme lancer une pièce.',
+    noteSimu:'Simulation de 16 chiots aléatoires tirés des probabilités génétiques ci-dessus.',
+    footer:'D\'après Colour in Bull Terriers – Part 2 de Tracey Butchart (2009). Références : Kerns et al. (2007), Candille et al. (2007), Schmutz & Berryere (2007).',
+    A:{ AyAy:'Ay Ay — Roux/fauve (vrai)',Ayat:'Ay at — Roux/fauve (porteur tri)',atat:'at at — Noir et feu / tricolore' },
+    K:{ kbrkbr:'kbr kbr — Bringé (vrai)',kbrky:'kbr ky — Bringé (porteur)',kyky:'ky ky — Non-bringé' },
+    S:{ sisi:'si si — Uni coloré',sisw:'si sw — Coloré & blanc',swsw:'sw sw — Entièrement blanc' },
+    phenoLabel(ph){
+      const map={
+        'red-solid':'Roux uni','red-white':'Roux & blanc','tri-solid':'Noir et feu / tricolore uni','tri-white':'Tricolore & blanc',
+        'brindle-solid':'Bringé uni','brindle-white':'Bringé & blanc','black-brindle-solid':'Bringé noir uni','black-brindle-white':'Bringé noir & blanc',
+        'white-red':'Blanc (porteur roux)','white-tri':'Blanc (porteur tri)','white-brindle':'Blanc (porteur bringé)','white-black-brindle':'Blanc (porteur bringé noir)',
+      };
+      return map[ph]||ph;
+    },
+    genoDesc(A,K,S){
+      const ab=A==='AyAy'?'Ay Ay':A==='Ayat'?'Ay at':'at at';
+      const kb=K==='kbrkbr'?'kbr kbr':K==='kbrky'?'kbr ky':'ky ky';
+      const sb=S==='sisi'?'si si':S==='sisw'?'si sw':'sw sw';
+      return [ab,kb,sb];
+    },
+    phenoVisible(A,K,S){
+      if(S==='swsw'){if(!A.includes('Ay')&&K.includes('kbr'))return'Blanc (porteur bringé noir)';if(!A.includes('Ay'))return'Blanc (porteur tri)';if(K.includes('kbr'))return'Blanc (porteur bringé)';return'Blanc (porteur roux)';}
+      const base=A.includes('Ay')?'red':'tri';
+      const brindle=K.includes('kbr');
+      const partial=S==='sisw';
+      if(base==='red'&&!brindle)return partial?'Roux & blanc':'Roux uni';
+      if(base==='red'&&brindle)return partial?'Bringé & blanc':'Bringé uni';
+      if(base==='tri'&&!brindle)return partial?'Tricolore & blanc':'Noir et feu / tricolore uni';
+      return partial?'Bringé noir & blanc':'Bringé noir uni';
+    }
   }
 };
 
-// LOCI (3 only)
-const loci = [
-  ["AyAy","Ayat","atat"],
-  ["kbrkbr","kbrky","kyky"],
-  ["sisi","sisw","swsw"]
-];
+/* ══════════════════════════════════════════
+   COLOUR PALETTE for each phenotype key
+══════════════════════════════════════════ */
+const COLOURS = {
+  'red-solid':          { body:'#C49A6C', belly:'#C49A6C', stripe:null,  white:false },
+  'red-white':          { body:'#C49A6C', belly:'#C49A6C', stripe:null,  white:true  },
+  'tri-solid':          { body:'#1C1917', belly:'#1C1917', stripe:null,  white:false, tan:'#C49A6C' },
+  'tri-white':          { body:'#1C1917', belly:'#1C1917', stripe:null,  white:true,  tan:'#C49A6C' },
+  'brindle-solid':      { body:'#7B5230', belly:'#7B5230', stripe:'#2C1A08', white:false },
+  'brindle-white':      { body:'#7B5230', belly:'#7B5230', stripe:'#2C1A08', white:true  },
+  'black-brindle-solid':{ body:'#1C1917', belly:'#1C1917', stripe:'#7B5230', white:false },
+  'black-brindle-white':{ body:'#1C1917', belly:'#1C1917', stripe:'#7B5230', white:true  },
+  'white-red':          { body:'#F5F5F0', belly:'#F5F5F0', stripe:null,  white:false, allwhite:true },
+  'white-tri':          { body:'#F5F5F0', belly:'#F5F5F0', stripe:null,  white:false, allwhite:true },
+  'white-brindle':      { body:'#F5F5F0', belly:'#F5F5F0', stripe:null,  white:false, allwhite:true },
+  'white-black-brindle':{ body:'#F5F5F0', belly:'#F5F5F0', stripe:null,  white:false, allwhite:true },
+};
 
-// BUILD SELECTORS
-function buildSelectors(containerId) {
-  const container = document.getElementById(containerId);
+/* ══════════════════════════════════════════
+   SVG DOG SILHOUETTE RENDERER
+   Bull Terrier shape — egg head, muscular body
+══════════════════════════════════════════ */
 
-  loci.forEach(locus => {
-    const select = document.createElement("select");
+function dogSVG(phenoKey, size='large') {
 
-    locus.forEach(g => {
-      const opt = document.createElement("option");
-      opt.value = g;
-      opt.textContent = LABELS[currentLang][g];
-      select.appendChild(opt);
-    });
+  const img = DOG_IMAGES[phenoKey] || DOG_IMAGES['red-solid'];
+  const sizeClass = size === 'small' ? 'dog-sm' : 'dog-lg';
 
-    select.addEventListener("change", compute);
-    container.appendChild(select);
-  });
+  return `${img}`;
 }
 
-// REBUILD
-function rebuild() {
-  document.getElementById("p1").innerHTML = "";
-  document.getElementById("p2").innerHTML = "";
 
-  buildSelectors("p1");
-  buildSelectors("p2");
-}
 
-// HELPERS
-function explode(g) {
-  return [g.slice(0,2), g.slice(2)];
-}
-
-function combine(a,b){
-  return [a,b].sort().join('');
-}
-
-// PHENOTYPE
-function phenotype(g) {
-
-  let color = "Red";
-  let swatch = "#C49A6C";
-
-  if(!g[0].includes("Ay")) {
-    color = "Tricolor";
-    swatch = "#2C2C2C";
+/* ══════════════════════════════════════════
+   PHENOTYPE KEY from genotype triple
+══════════════════════════════════════════ */
+function phenoKey(A,K,S){
+  const isWhite  = S==='swsw';
+  const isBase   = A.includes('Ay'); // red/fawn base
+  const isBrindle= K.includes('kbr');
+  const isPartial= S==='sisw';
+  if(isWhite){
+    if(isBase  && !isBrindle) return 'white-red';
+    if(isBase  &&  isBrindle) return 'white-brindle';
+    if(!isBase && !isBrindle) return 'white-tri';
+    return 'white-black-brindle';
   }
-
-  if(g[1].includes("kbr")) {
-    color = "Brindle";
-    swatch = "#7B5230";
-  }
-
-  if(g[2] === "swsw") {
-    color = "White";
-    swatch = "#FAFAF8";
-  }
-  else if(g[2] === "sisw") {
-    color += " & white";
-    swatch = "#D4763A";
-  }
-
-  return {label: color, swatch};
+  if(isBase  && !isBrindle) return isPartial?'red-white':'red-solid';
+  if(isBase  &&  isBrindle) return isPartial?'brindle-white':'brindle-solid';
+  if(!isBase && !isBrindle) return isPartial?'tri-white':'tri-solid';
+  return isPartial?'black-brindle-white':'black-brindle-solid';
 }
 
-// COMPUTE
-function compute() {
+/* ══════════════════════════════════════════
+   EXACT PROBABILITY CALCULATION
+   Enumerate all 2×2×2×2×2×2 = 64 combos
+══════════════════════════════════════════ */
+function getGametes(geno, alleles){
+  const[a,b]=alleles;
+  if(geno===a+a) return[a,a];
+  if(geno===b+b) return[b,b];
+  return[a,b];
+}
 
-  const p1 = [...document.querySelectorAll("#p1 select")].map(s=>s.value);
-  const p2 = [...document.querySelectorAll("#p2 select")].map(s=>s.value);
+function exactProbs(p1A,p1K,p1S, p2A,p2K,p2S){
+  const aA=['Ay','at'], aK=['kbr','ky'], aS=['si','sw'];
+  const g1A=getGametes(p1A,aA), g2A=getGametes(p2A,aA);
+  const g1K=getGametes(p1K,aK), g2K=getGametes(p2K,aK);
+  const g1S=getGametes(p1S,aS), g2S=getGametes(p2S,aS);
 
-  let results = {};
+  const counts={};
+  let total=0;
+  for(const a1 of g1A) for(const a2 of g2A)
+  for(const k1 of g1K) for(const k2 of g2K)
+  for(const s1 of g1S) for(const s2 of g2S){
+    // sort alleles dominant-first
+    const cA=[a1,a2].sort((x,y)=>(x==='Ay'?0:1)-(y==='Ay'?0:1)).join('');
+    const cK=[k1,k2].sort((x,y)=>(x==='kbr'?0:1)-(y==='kbr'?0:1)).join('');
+    const cS=[s1,s2].sort((x,y)=>(x==='si'?0:1)-(y==='si'?0:1)).join('');
+    const pk=phenoKey(cA,cK,cS);
+    counts[pk]=(counts[pk]||0)+1;
+    total++;
+  }
+  // convert to fractions
+  return Object.entries(counts).map(([k,n])=>({key:k,prob:n/total,n,total}))
+    .sort((a,b)=>b.prob-a.prob);
+}
 
-  for(let i=0;i<16;i++){
+/* ══════════════════════════════════════════
+   STATE
+══════════════════════════════════════════ */
+let lang = localStorage.getItem('btLang')||'en';
+let method = 'exact';
 
-    let child = [];
+function setLang(l){
+  lang=l;
+  localStorage.setItem('btLang',l);
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  document.getElementById('btn-fr').classList.toggle('active',l==='fr');
+  document.documentElement.lang=l;
+  rebuildUI();
+  update();
+}
 
-    for(let j=0;j<3;j++){
-      const g1 = explode(p1[j]);
-      const g2 = explode(p2[j]);
+function setMethod(m){
+  method=m;
+  document.getElementById('btn-exact').classList.toggle('active',m==='exact');
+  document.getElementById('btn-sim').classList.toggle('active',m==='sim');
+  update();
+}
 
-      const a = g1[Math.floor(Math.random()*2)];
-      const b = g2[Math.floor(Math.random()*2)];
+/* ══════════════════════════════════════════
+   BUILD SELECTS
+══════════════════════════════════════════ */
+function buildSelect(id, locus, savedVal){
+  const sel=document.getElementById(id);
+  const t=T[lang];
+  const opts = locus==='A'?t.A : locus==='K'?t.K : t.S;
+  sel.innerHTML=Object.entries(opts).map(([v,label])=>`<option value="${v}">${label}</option>`).join('');
+  if(savedVal && sel.querySelector(`option[value="${savedVal}"]`)) sel.value=savedVal;
+}
 
-      child.push(combine(a,b));
+/* ══════════════════════════════════════════
+   UPDATE PARENT PREVIEW
+══════════════════════════════════════════ */
+function updatePreview(num){
+  const t=T[lang];
+  const A=document.getElementById(`p${num}-A`).value;
+  const K=document.getElementById(`p${num}-K`).value;
+  const S=document.getElementById(`p${num}-S`).value;
+  const pk=phenoKey(A,K,S);
+  document.getElementById(`p${num}-svg`).innerHTML = dogSVG(pk,'large');
+  document.getElementById(`p${num}-pheno-label`).textContent=t.phenoVisible(A,K,S);
+  const pills=t.genoDesc(A,K,S);
+  document.getElementById(`p${num}-geno-pills`).innerHTML=pills.map(p=>`<span class="gpill">${p}</span>`).join('');
+}
+
+/* ══════════════════════════════════════════
+   UPDATE RESULTS
+══════════════════════════════════════════ */
+function update(){
+  updatePreview(1);
+  updatePreview(2);
+  const t=T[lang];
+  const p1A=document.getElementById('p1-A').value, p1K=document.getElementById('p1-K').value, p1S=document.getElementById('p1-S').value;
+  const p2A=document.getElementById('p2-A').value, p2K=document.getElementById('p2-K').value, p2S=document.getElementById('p2-S').value;
+
+  let outcomes;
+  if(method==='exact'){
+    outcomes=exactProbs(p1A,p1K,p1S,p2A,p2K,p2S);
+    document.getElementById('results-note').textContent=t.note;
+  } else {
+    // simulate 16 puppies
+    const aA=['Ay','at'],aK=['kbr','ky'],aS=['si','sw'];
+    const g1A=getGametes(p1A,aA),g2A=getGametes(p2A,aA);
+    const g1K=getGametes(p1K,aK),g2K=getGametes(p2K,aK);
+    const g1S=getGametes(p1S,aS),g2S=getGametes(p2S,aS);
+    const counts={};
+    for(let i=0;i<16;i++){
+      const a1=g1A[Math.floor(Math.random()*2)],a2=g2A[Math.floor(Math.random()*2)];
+      const k1=g1K[Math.floor(Math.random()*2)],k2=g2K[Math.floor(Math.random()*2)];
+      const s1=g1S[Math.floor(Math.random()*2)],s2=g2S[Math.floor(Math.random()*2)];
+      const cA=[a1,a2].sort((x,y)=>(x==='Ay'?0:1)-(y==='Ay'?0:1)).join('');
+      const cK=[k1,k2].sort((x,y)=>(x==='kbr'?0:1)-(y==='kbr'?0:1)).join('');
+      const cS=[s1,s2].sort((x,y)=>(x==='si'?0:1)-(y==='si'?0:1)).join('');
+      const pk=phenoKey(cA,cK,cS);
+      counts[pk]=(counts[pk]||0)+1;
     }
-
-    const ph = phenotype(child);
-
-    if(!results[ph.label]) results[ph.label]={count:0, sw:ph.swatch};
-    results[ph.label].count++;
+    outcomes=Object.entries(counts).map(([k,n])=>({key:k,prob:n/16,n,total:16})).sort((a,b)=>b.prob-a.prob);
+    document.getElementById('results-note').textContent=t.noteSimu;
   }
 
-  const res = document.getElementById("results");
-  res.innerHTML = "";
-
-  Object.entries(results).forEach(([label,data])=>{
-    res.innerHTML += `
-      <div class="result">
-        <div class="swatch" style="background:${data.sw}"></div>
-        <strong>${Math.round(data.count/16*100)}%</strong> — ${label}
-      </div>
-    `;
-  });
+  const grid=document.getElementById('results-grid');
+  grid.innerHTML=outcomes.map(o=>{
+    const label=t.phenoVisible?t.phenoVisible(...genoFromKey(o.key)):o.key;
+    const pct=Math.round(o.prob*100);
+    const frac=method==='exact'?`${o.n}/${o.total}`:`${o.n}/16`;
+    return `<div class="result-card">
+      ${dogSVG(o.key,'small')}
+      <div class="result-pct">${pct}%</div>
+      <div class="result-label">${t.phenoLabel(o.key)}</div>
+      <div class="result-geno">${frac}</div>
+    </div>`;
+  }).join('');
 }
 
-// LANG SWITCH
-function setLang(lang){
-  currentLang = lang;
-  rebuild();
-  compute();
+// helper — recover a representative genotype from phenotype key for label lookup
+function genoFromKey(pk){
+  const map={
+    'red-solid':['AyAy','kyky','sisi'],'red-white':['AyAy','kyky','sisw'],
+    'tri-solid':['atat','kyky','sisi'],'tri-white':['atat','kyky','sisw'],
+    'brindle-solid':['AyAy','kbrky','sisi'],'brindle-white':['AyAy','kbrky','sisw'],
+    'black-brindle-solid':['atat','kbrky','sisi'],'black-brindle-white':['atat','kbrky','sisw'],
+    'white-red':['AyAy','kyky','swsw'],'white-tri':['atat','kyky','swsw'],
+    'white-brindle':['AyAy','kbrky','swsw'],'white-black-brindle':['atat','kbrky','swsw'],
+  };
+  return map[pk]||['AyAy','kyky','sisi'];
 }
 
-// INIT
-rebuild();
-compute();
+/* ══════════════════════════════════════════
+   REBUILD FULL UI (on lang switch)
+══════════════════════════════════════════ */
+function rebuildUI(){
+  const t=T[lang];
+  // nav
+  document.getElementById('nav-genetics').textContent=t.navGenetics;
+  document.getElementById('nav-litter').textContent=t.navLitter;
+  // header
+  document.getElementById('hdr-eyebrow').textContent=t.eyebrow;
+  document.getElementById('hdr-title').textContent=t.title;
+  document.getElementById('hdr-desc').textContent=t.desc;
+  // cards
+  document.getElementById('card-tag-parents').textContent=t.tagParents;
+  document.getElementById('card-title-parents').textContent=t.titleParents;
+  document.getElementById('card-tag-results').textContent=t.tagResults;
+  document.getElementById('card-title-results').textContent=t.titleResults;
+  // parent labels
+  document.getElementById('p1-label').textContent=t.p1;
+  document.getElementById('p2-label').textContent=t.p2;
+  document.getElementById('p1-a-label').textContent=t.aLocus;
+  document.getElementById('p1-k-label').textContent=t.kLocus;
+  document.getElementById('p1-s-label').textContent=t.sLocus;
+  document.getElementById('p2-a-label').textContent=t.aLocus;
+  document.getElementById('p2-k-label').textContent=t.kLocus;
+  document.getElementById('p2-s-label').textContent=t.sLocus;
+  // method
+  document.getElementById('method-label').textContent=t.methodLabel;
+  document.getElementById('btn-exact').textContent=t.btnExact;
+  document.getElementById('btn-sim').textContent=t.btnSim;
+  // results section
+  document.getElementById('results-section-label').textContent=t.resultsLabel;
+  // footer
+  document.getElementById('footer-ref').textContent=t.footer;
+  // rebuild selects preserving values
+  const vals={
+    p1A:document.getElementById('p1-A').value,
+    p1K:document.getElementById('p1-K').value,
+    p1S:document.getElementById('p1-S').value,
+    p2A:document.getElementById('p2-A').value,
+    p2K:document.getElementById('p2-K').value,
+    p2S:document.getElementById('p2-S').value,
+  };
+  buildSelect('p1-A','A',vals.p1A);
+  buildSelect('p1-K','K',vals.p1K);
+  buildSelect('p1-S','S',vals.p1S);
+  buildSelect('p2-A','A',vals.p2A);
+  buildSelect('p2-K','K',vals.p2K);
+  buildSelect('p2-S','S',vals.p2S);
+}
 
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+document.getElementById('btn-en').classList.toggle('active',lang==='en');
+document.getElementById('btn-fr').classList.toggle('active',lang==='fr');
+document.documentElement.lang=lang;
+rebuildUI();
+// set nice defaults: heterozygous parents
+document.getElementById('p1-A').value='Ayat';
+document.getElementById('p1-K').value='kbrky';
+document.getElementById('p1-S').value='sisw';
+document.getElementById('p2-A').value='Ayat';
+document.getElementById('p2-K').value='kyky';
+document.getElementById('p2-S').value='sisw';
+update();
 </script>
-
 </body>
 </html>
