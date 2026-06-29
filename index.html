@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bull Terrier Colour Genetics / Génétique des Couleurs</title>
+<title>Bull Terrier Colour Genetics / Génétique des Couleurs chez le Bull Terrier</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,24 +15,29 @@
 
 <body>
 
+<!-- TOP BAR -->
 <div class="top-bar">
   <div class="top-bar-inner">
-    <span class="lang-label">Lang</span>
-    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
-    <button class="lang-btn" id="btn-fr" onclick="setLang('fr')">FR</button>
+    <nav class="nav-links">
+      <a class="nav-link" active="index.html" id="nav-genetics"></a>
+      <a class="nav-link href" href="cross.html" id="nav-litter"></a>
+      <a class="nav-link" href="reverse.html" id="nav-reverse"></a>
+    </nav>
+    <div class="lang-group">
+      <span class="lang-label">Lang</span>
+      <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="btn-fr" onclick="setLang('fr')">FR</button>
+    </div>
   </div>
 </div>
 
-<div style="background:var(--white); border-bottom: 1px solid var(--rule)">
-  <header>
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
     <div class="header-eyebrow" id="hdr-eyebrow"></div>
     <h1 id="hdr-title"></h1>
     <p id="hdr-desc"></p>
-    <nav style="margin-top:14px; display:flex; gap:10px;">
-  <a href="index.html" class="nav-btn">Genetics view</a>
-  <a href="cross.html" class="nav-btn">Simulate your litter</a>
-</nav>
-  </header>
+  </div>
 </div>
 
 <main id="app"></main>
@@ -135,9 +140,9 @@ const TRANSLATIONS = {
     footerRef: 'D\'après <em>Colour in Bull Terriers – Part 2 – Inheritance of Colour</em> de Tracey Butchart (2009), avec illustrations de Duncan Butchart. Références génétiques : Kerns et al. (2007), Candille et al. (2007) et Schmutz &amp; Berryere (2007).',
     rules: [
       { icon:'⬜', text:'Deux parents blancs produisent toujours des chiots entièrement blancs — jamais un chiot à dominante colorée.' },
-      { icon:'🚫', text:'Un parent blanc ne peut jamais produire un chiot uni coloré — uniquement coloré & blanc ou entièrement blanc.' },
-      { icon:'⬛', text:'Un parent uni coloré ne produira jamais de chiot entièrement blanc, même avec un partenaire blanc.' },
-      { icon:'🔀', text:'Deux parents unis produisent des chiots entièrement unis. Deux parents coloré & blanc produisent ¼ uni, ½ coloré & blanc, ¼ blanc.' },
+      { icon:'🚫', text:'Un parent blanc ne peut jamais produire un chiot solide coloré — solidequement coloré & blanc ou entièrement blanc.' },
+      { icon:'⬛', text:'Un parent solide coloré ne produira jamais de chiot entièrement blanc, même avec un partenaire blanc.' },
+      { icon:'🔀', text:'Deux parents solides produisent des chiots entièrement solides. Deux parents coloré & blanc produisent ¼ solide, ½ coloré & blanc, ¼ blanc.' },
       { icon:'🟫', text:'Le bringé n\'apparaît que si au moins un parent est bringé ou un blanc porteur du bringé. Deux parents non-bringés ne peuvent pas produire de chiots bringés.' },
       { icon:'🐕', text:'Si des chiens noir & feu, tricolores, bringé noir ou bringé noir & blanc sont croisés entre eux, les chiots ne seront que de ces quatre types.' },
     ],
@@ -145,18 +150,18 @@ const TRANSLATIONS = {
       {
         tag: 'Série A',
         title: 'Agouti — patron de couleur de base',
-        subtitle: 'Détermine roux/fauve vs noir-et-feu. Ay est entièrement dominant sur at.',
+        subtitle: 'Détermine rouge/fauve vs noir-et-feu. Ay est entièrement dominant sur at.',
         genotypes: [
-          { v:'AyAy', label:'Ay Ay — homozygote fauve/roux' },
-          { v:'Ayat', label:'Ay at — hétérozygote fauve/roux' },
+          { v:'AyAy', label:'Ay Ay — homozygote fauve/rouge' },
+          { v:'Ayat', label:'Ay at — hétérozygote fauve/rouge' },
           { v:'atat', label:'at at — base noir et feu' },
         ],
         legend: [
-          { allele:'Ay', desc:'roux / fauve (dominant)' },
+          { allele:'Ay', desc:'rouge / fauve (dominant)' },
           { allele:'at', desc:'noir et feu (récessif)' },
         ],
-        phenoLabels: { AyAy:'Roux / fauve', Ayat:'Roux/fauve foncé', atat:'Noir et feu' },
-        note: 'Ay Ay et Ay at sont phénotypiquement tous deux roux/fauve — Ay at est souvent légèrement plus foncé ou plus riche. Seul at at exprime le patron noir-et-feu / tricolore. Ce sont les deux seuls allèles de la série A présents chez le Bull Terrier.',
+        phenoLabels: { AyAy:'Rouge / fauve', Ayat:'Rouge/fauve foncé', atat:'Noir et feu' },
+        note: 'Ay Ay et Ay at sont phénotypiquement tous deux rouge/fauve — Ay at est souvent légèrement plus foncé ou plus riche. Seul at at exprime le patron noir-et-feu / tricolore. Ce sont les deux seuls allèles de la série A présents chez le Bull Terrier.',
       },
       {
         tag: 'Série K',
@@ -177,7 +182,7 @@ const TRANSLATIONS = {
       {
         tag: 'Série E',
         title: 'Extension du pigment — masque foncé (smut)',
-        subtitle: 'Em (masque foncé) est dominant sur E (sans masque). Contrôle uniquement les marques de museau noir / smut.',
+        subtitle: 'Em (masque foncé) est dominant sur E (sans masque). Contrôle solidequement les marques de museau noir / smut.',
         genotypes: [
           { v:'EmEm', label:'Em Em — masque homozygote' },
           { v:'EmE',  label:'Em E — masque hétérozygote' },
@@ -188,23 +193,23 @@ const TRANSLATIONS = {
           { allele:'E',  desc:'sans masque (récessif)' },
         ],
         phenoLabels: { EmEm:'Masque foncé / smut', EmE:'Masque foncé / smut', EE:'Sans masque' },
-        note: 'Le masque foncé est le plus visible chez les chiens roux uni et fauve uni sous forme de smut roux ou smut fauve. Chez les bringés ou noir-et-feu, il est masqué par un pigment plus sombre. Chez les coloré & blanc, il peut n\'apparaître que sous forme de marques noires aux lèvres ou sous les yeux. Em Em et Em E sont identiques phénotypiquement.',
+        note: 'Le masque foncé est le plus visible chez les chiens rouge solide et fauve solide sous forme de smut rouge ou smut fauve. Chez les bringés ou noir-et-feu, il est masqué par un pigment plus sombre. Chez les coloré & blanc, il peut n\'apparaître que sous forme de marques noires aux lèvres ou sous les yeux. Em Em et Em E sont identiques phénotypiquement.',
       },
       {
         tag: 'Série S',
         title: 'Patron de tacheture blanche',
         subtitle: 'Les Bull Terriers utilisent si (tacheture irlandaise) et sw (blanc extrême) — pas de véritable allèle S dominant.',
         genotypes: [
-          { v:'sisi', label:'si si — uni coloré' },
+          { v:'sisi', label:'si si — solide coloré' },
           { v:'sisw', label:'si sw — coloré & blanc' },
           { v:'swsw', label:'sw sw — entièrement blanc' },
         ],
         legend: [
-          { allele:'si', desc:'uni / peu de blanc (dominant)' },
+          { allele:'si', desc:'solide / peu de blanc (dominant)' },
           { allele:'sw', desc:'blanc extrême (récessif)' },
         ],
-        phenoLabels: { sisi:'Uni coloré', sisw:'Coloré & blanc', swsw:'Entièrement blanc' },
-        note: 'Les Bull Terriers n\'ont pas le véritable allèle dominant S présent dans certaines races. si si = peu ou pas de blanc (chanfrein, poitrine, pattes uniquement). si sw = patron coloré & blanc classique. sw sw = robe majoritairement ou entièrement blanche — marques colorées possibles sur la tête. Un parent uni ne peut jamais produire un chiot entièrement blanc.',
+        phenoLabels: { sisi:'Solide coloré', sisw:'Coloré & blanc', swsw:'Entièrement blanc' },
+        note: 'Les Bull Terriers n\'ont pas le véritable allèle dominant S présent dans certaines races. si si = peu ou pas de blanc (chanfrein, poitrine, pattes solidequement). si sw = patron coloré & blanc classique. sw sw = robe majoritairement ou entièrement blanche — marques colorées possibles sur la tête. Un parent solide ne peut jamais produire un chiot entièrement blanc.',
       },
     ],
   },

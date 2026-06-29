@@ -16,6 +16,7 @@
     <nav class="nav-links">
       <a class="nav-link" href="index.html" id="nav-genetics"></a>
       <a class="nav-link active" href="cross.html" id="nav-litter"></a>
+      <a class="nav-link" href="reverse.html" id="nav-reverse"></a>
     </nav>
     <div class="lang-group">
       <span class="lang-label">Lang</span>
@@ -199,19 +200,19 @@ const T = {
     methodLabel:'Méthode de calcul :',
     btnExact:'Probabilités exactes', btnSim:'Simuler 16 chiots',
     resultsLabel:'Phénotypes possibles',
-    note:'Ces probabilités sont théoriques et s\'appliquent à de grandes populations. Dans une portée réelle de 4 à 8 chiots, le résultat peut différer significativement par hasard — comme lancer une pièce.',
+    note:'Ces probabilités sont théoriques et s\'appliquent à de grandes populations, elles représentent le champ des possibles. Dans une portée réelle de 4 à 8 chiots, le résultat peut différer significativement par hasard — comme lancer une pièce.',
     noteSimu:'Simulation de 16 chiots aléatoires tirés des probabilités génétiques ci-dessus.',
     footer:'D\'après Colour in Bull Terriers – Part 2 de Tracey Butchart (2009). Références : Kerns et al. (2007), Candille et al. (2007), Schmutz & Berryere (2007).',
-    A:{ AyAy:'Ay Ay — Roux/fauve (vrai)',Ayat:'Ay at — Roux/fauve (porteur tri)',atat:'at at — Noir et feu / tricolore' },
+    A:{ AyAy:'Ay Ay — Rouge/fauve (vrai)',Ayat:'Ay at — Rouge/fauve (porteur tri)',atat:'at at — Noir et feu / tricolore' },
     K:{ kbrkbr:'kbr kbr — Bringé (vrai)',kbrky:'kbr ky — Bringé (porteur)',kyky:'ky ky — Non-bringé' },
-    S:{ sisi:'si si — Uni coloré',sisw:'si sw — Coloré & blanc',swsw:'sw sw — Entièrement blanc' },
+    S:{ sisi:'si si — Solide coloré',sisw:'si sw — Coloré & blanc',swsw:'sw sw — Entièrement blanc' },
     phenoLabel(ph){
       const map={
-        'red-solid':'Roux uni','red-white':'Roux & blanc',
-        'tri-solid':'Noir et feu uni','tri-white':'Tricolore & blanc',
-        'brindle-solid':'Bringé uni','brindle-white':'Bringé & blanc',
-        'black-brindle-solid':'Bringé noir uni','black-brindle-white':'Bringé noir & blanc',
-        'white-red':'Blanc (porteur roux)','white-tri':'Blanc (porteur tri)',
+        'red-solid':'Rouge solide','red-white':'Rouge & blanc',
+        'tri-solid':'Noir et feu solide','tri-white':'Tricolore & blanc',
+        'brindle-solid':'Bringé solide','brindle-white':'Bringé & blanc',
+        'black-brindle-solid':'Bringé noir solide','black-brindle-white':'Bringé noir & blanc',
+        'white-red':'Blanc (porteur rouge)','white-tri':'Blanc (porteur tri)',
         'white-brindle':'Blanc (porteur bringé)','white-black-brindle':'Blanc (porteur bringé noir)',
       };
       return map[ph]||ph;
@@ -227,15 +228,15 @@ const T = {
         if(!A.includes('Ay')&&K.includes('kbr')) return 'Blanc (porteur bringé noir)';
         if(!A.includes('Ay')) return 'Blanc (porteur tri)';
         if(K.includes('kbr')) return 'Blanc (porteur bringé)';
-        return 'Blanc (porteur roux)';
+        return 'Blanc (porteur rouge)';
       }
       const base=A.includes('Ay')?'red':'tri';
       const brindle=K.includes('kbr');
       const partial=S==='sisw';
-      if(base==='red'&&!brindle) return partial?'Roux & blanc':'Roux uni';
-      if(base==='red'&&brindle)  return partial?'Bringé & blanc':'Bringé uni';
-      if(base==='tri'&&!brindle) return partial?'Tricolore & blanc':'Noir et feu uni';
-      return partial?'Bringé noir & blanc':'Bringé noir uni';
+      if(base==='red'&&!brindle) return partial?'Rouge & blanc':'Rouge solide';
+      if(base==='red'&&brindle)  return partial?'Bringé & blanc':'Bringé solide';
+      if(base==='tri'&&!brindle) return partial?'Tricolore & blanc':'Noir et feu solide';
+      return partial?'Bringé noir & blanc':'Bringé noir solide';
     }
   }
 };
