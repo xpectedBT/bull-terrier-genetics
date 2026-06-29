@@ -1,3 +1,9 @@
+
+/* ═══════════════════════════════════════
+   STATE
+═══════════════════════════════════════ */
+let selectedKey = null;
+
 /* ══════════════════════════════════════════
    PHENOTYPE DATA
    Each entry: key, image, EN label, FR label,
@@ -214,167 +220,79 @@ const PHENOTYPES = [
   },
 ];
 
-/* ══════════════════════════════════════════
-   TRANSLATIONS (UI strings only — phenotype
-   labels live in PHENOTYPES above)
-══════════════════════════════════════════ */
-const UI = {
-  en:{
-    navGenetics:'Colour genetics', navLitter:'Simulate a litter', navReverse:'Identify genotype',
-    eyebrow:'Genotype Lookup · Coat Colour',
-    title:'Identify your dog\'s genotype',
-    desc:'Select the coat colour and pattern that matches your dog. The tool shows every possible genotype that can produce that phenotype.',
-    tagStep1:'Step 1', titleStep1:'What does your dog look like?',
-    tagStep2:'Step 2', titleResults:'Possible genotypes',
-    labelColoured:'Coloured & coloured/white dogs',
-    labelWhite:'White dogs',
-    emptyText:'Select a coat colour above to see the possible genotypes.',
-    bannerSub:'Select a coat colour above — the possible genotypes will appear here.',
-    optionLabel: n => `Genotype option ${n}`,
-    offspringTitle:'Offspring potential:',
-    hint:'These genotype options cannot always be distinguished visually. Knowing the colours of parents, grandparents, or offspring already produced is the most reliable way to determine which genotype your dog actually carries.',
-    footer:'Based on Colour in Bull Terriers – Part 2 – Inheritance of Colour by Tracey Butchart (2009).',
-  },
-  fr:{
-    navGenetics:'Génétique des couleurs', navLitter:'Simuler une portée', navReverse:'Identifier le génotype',
-    eyebrow:'Recherche de génotype · Couleur de robe',
-    title:'Identifier le génotype de votre chien',
-    desc:'Sélectionnez la couleur et le patron de robe qui correspondent à votre chien. L\'outil affiche tous les génotypes possibles pouvant produire ce phénotype.',
-    tagStep1:'Étape 1', titleStep1:'À quoi ressemble votre chien ?',
-    tagStep2:'Étape 2', titleResults:'Génotypes possibles',
-    labelColoured:'Chiens colorés & colorés/blancs',
-    labelWhite:'Chiens blancs',
-    emptyText:'Sélectionnez une couleur de robe ci-dessus pour voir les génotypes possibles.',
-    bannerSub:'Sélectionnez une couleur de robe ci-dessus — les génotypes possibles apparaîtront ici.',
-    optionLabel: n => `Option génotype ${n}`,
-    offspringTitle:'Potentiel de descendance :',
-    hint:'Ces options génotypiques ne peuvent pas toujours être distinguées visuellement. Connaître les couleurs des parents, grands-parents ou chiots déjà produits est le moyen le plus fiable de déterminer le génotype réel de votre chien.',
-    footer:'D\'après Colour in Bull Terriers – Part 2 – Inheritance of Colour de Tracey Butchart (2009).',
-  }
-};
 
-/* ══════════════════════════════════════════
-   STATE
-══════════════════════════════════════════ */
-let lang = localStorage.getItem('btLang') || 'en';
-let selectedKey = null;
-
-function setLang(l){
-  lang = l;
-  localStorage.setItem('btLang', l);
-  document.getElementById('btn-en').classList.toggle('active', l==='en');
-  document.getElementById('btn-fr').classList.toggle('active', l==='fr');
-  document.documentElement.lang = l;
-  renderAll();
-}
-
-/* ══════════════════════════════════════════
+/* ═══════════════════════════════════════
    SELECT PHENOTYPE
-══════════════════════════════════════════ */
-function selectPheno(key){
+═══════════════════════════════════════ */
+function selectPheno(key) {
   selectedKey = key;
+
   document.querySelectorAll('.pheno-card').forEach(c => {
     c.classList.toggle('selected', c.dataset.key === key);
   });
+
   renderResults();
 }
 
-/* ══════════════════════════════════════════
-   RENDER PHENOTYPE GRID
-══════════════════════════════════════════ */
-function renderGrid(groupId, group){
-  const container = document.getElementById(groupId);
+/* ═══════════════════════════════════════
+   GRID
+═══════════════════════════════════════ */
+function renderGrid(id, group) {
+  const container = document.getElementById(id);
+  if (!container) return;
+
   const items = PHENOTYPES.filter(p => p.group === group);
+
   container.innerHTML = items.map(p => `
-    <div class="pheno-card${selectedKey===p.key?' selected':''}" data-key="${p.key}" onclick="selectPheno('${p.key}')">
-      <img src="${p.img}" alt="${p.label[lang]}" onerror="this.style.opacity='.3'"/>
+    <div class="pheno-card" onclick="selectPheno('${p.key}')">
+      <img src="${p.img}" />
       <div class="pheno-card-label">${p.label[lang]}</div>
     </div>
   `).join('');
 }
 
-/* ══════════════════════════════════════════
-   RENDER RESULTS
-══════════════════════════════════════════ */
-function renderResults(){
+/* ═══════════════════════════════════════
+   RESULTS
+═══════════════════════════════════════ */
+function renderResults() {
   const ui = UI[lang];
-  const resultsEl = document.getElementById('geno-results');
-  const hintEl    = document.getElementById('hint-box');
-  const banner    = document.getElementById('selected-banner');
 
-  if(!selectedKey){
-    banner.classList.remove('visible');
-    resultsEl.innerHTML = `<div class="empty-state"><div class="icon">🐾</div><div>${ui.emptyText}</div></div>`;
-    hintEl.style.display = 'none';
+  const results = document.getElementById('geno-results');
+  const hint = document.getElementById('hint-box');
+  const banner = document.getElementById('selected-banner');
+
+  if (!selectedKey) {
+    results.innerHTML = `<div class="empty-state">🐾<br>${ui.emptyText}</div>`;
+    if (banner) banner.classList.remove('visible');
+    if (hint) hint.style.display = 'none';
     return;
   }
 
   const pheno = PHENOTYPES.find(p => p.key === selectedKey);
-  if(!pheno) return;
 
-  // Banner
-  banner.classList.add('visible');
-  document.getElementById('banner-img').src = pheno.img;
-  document.getElementById('banner-label').textContent = pheno.label[lang];
-  document.getElementById('banner-sub').textContent =
-    `${pheno.genotypes.length} ${pheno.genotypes.length > 1
-      ? (lang==='en' ? 'possible genotypes' : 'génotypes possibles')
-      : (lang==='en' ? 'possible genotype' : 'génotype possible')}`;
-
-  // Genotype options
-  resultsEl.innerHTML = pheno.genotypes.map((g, i) => `
+  results.innerHTML = pheno.genotypes.map((g, i) => `
     <div class="geno-option">
       <div class="geno-option-header">
-        <span class="geno-number">${ui.optionLabel(i+1)}</span>
-        <div class="geno-formula">
-          ${g.pills.map(([allele, locus]) =>
-            `<span class="locus-pill">${allele}<span>${locus}</span></span>`
-          ).join('<span style="color:var(--ink-muted);font-style:normal">×</span>')}
-        </div>
+        <span class="geno-number">${ui.tagStep2} ${i + 1}</span>
       </div>
-      <div class="offspring-note">
-        <strong>${ui.offspringTitle}</strong> ${g.note[lang]}
-      </div>
+      <div>${g.note[lang]}</div>
     </div>
   `).join('');
 
-  // Hint only when multiple options exist
-  if(pheno.genotypes.length > 1){
-    hintEl.textContent = ui.hint;
-    hintEl.style.display = 'block';
-  } else {
-    hintEl.style.display = 'none';
+  if (hint) {
+    hint.textContent = ui.hint;
+    hint.style.display = 'block';
   }
 }
 
-/* ══════════════════════════════════════════
-   RENDER ALL UI
-══════════════════════════════════════════ */
-function renderAll(){
-  const ui = UI[lang];
-  document.getElementById('nav-genetics').textContent  = ui.navGenetics;
-  document.getElementById('nav-litter').textContent    = ui.navLitter;
-  document.getElementById('nav-reverse').textContent   = ui.navReverse;
-  document.getElementById('hdr-eyebrow').textContent   = ui.eyebrow;
-  document.getElementById('hdr-title').textContent     = ui.title;
-  document.getElementById('hdr-desc').textContent      = ui.desc;
-  document.getElementById('card-tag-step1').textContent  = ui.tagStep1;
-  document.getElementById('card-title-step1').textContent = ui.titleStep1;
-  document.getElementById('card-tag-step2').textContent  = ui.tagStep2;
-  document.getElementById('card-title-step2').textContent = ui.titleResults;
-  document.getElementById('label-coloured').textContent  = ui.labelColoured;
-  document.getElementById('label-white').textContent     = ui.labelWhite;
-  document.getElementById('empty-text').textContent      = ui.emptyText;
-  document.getElementById('footer-ref').textContent      = ui.footer;
+/* ═══════════════════════════════════════
+   HOOK CALLED BY ui.js
+═══════════════════════════════════════ */
+window.renderPage = function () {
   renderGrid('grid-coloured', 'coloured');
-  renderGrid('grid-white',    'white');
+  renderGrid('grid-white', 'white');
   renderResults();
-}
+};
 
-/* ══════════════════════════════════════════
-   INIT
-══════════════════════════════════════════ */
-document.getElementById('btn-en').classList.toggle('active', lang==='en');
-document.getElementById('btn-fr').classList.toggle('active', lang==='fr');
-document.documentElement.lang = lang;
-renderAll();
+/* allow onclick in HTML */
+window.selectPheno = selectPheno;
