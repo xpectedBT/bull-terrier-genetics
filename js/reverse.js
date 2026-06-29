@@ -245,8 +245,13 @@ function renderGrid(id, group) {
 
   container.innerHTML = items.map(p => `
     <div class="pheno-card" onclick="selectPheno('${p.key}')">
-      <img src="${p.img}" />
-      <div class="pheno-card-label">${p.label[lang]}</div>
+
+      <img src="${p.img}" alt="${p.label[lang]}" />
+
+      <div class="pheno-card-label">
+        ${p.label[lang]}
+      </div>
+
     </div>
   `).join('');
 }
