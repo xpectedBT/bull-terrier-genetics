@@ -64,19 +64,6 @@ body {
 .nav-link:hover { background: var(--cream-dark); }
 .nav-link.active { background: var(--accent); color: var(--white); }
 
-/* legacy back-button style */
-.nav-btn {
-  font-size: 12px;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 20px;
-  border: 1px solid var(--rule);
-  background: var(--cream);
-  color: var(--ink-soft);
-  text-decoration: none;
-  transition: 0.15s;
-}
-.nav-btn:hover { background: var(--cream-dark); }
 
 /* ── LANG SWITCHER ── */
 .lang-group { display: flex; align-items: center; gap: 6px; }
@@ -103,20 +90,58 @@ body {
   letter-spacing: 0.04em;
   transition: all 0.15s;
 }
-.lang-btn.active { background: var(--accent); color: var(--white); border-color: var(--accent); }
+.lang-btn.active {
+   background: var(--accent);
+    color: var(--white);
+     border-color: var(--accent);
+     }
 .lang-btn:hover:not(.active) { background: var(--cream-dark); }
 
-/* ── PAGE HEADER (cross.html uses .page-header, index.html uses <header>) ── */
-.page-header { background: var(--white); border-bottom: 1px solid var(--rule); }
-.page-header-inner { max-width: 900px; margin: 0 auto; padding: 1.75rem 2rem 1.5rem; }
+/* ── FLAGS INSIDE BUTTONS ── */
 
-header {
-  background: var(--white);
-  padding: 1.75rem 2rem 1.5rem;
-  max-width: 900px;
-  margin: 0 auto;
+.lang-btn {
+  position: relative;
+  padding-left: 28px; /* space for flag */
 }
 
+/* small flag icon */
+.lang-btn::before {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 12px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 2px;
+}
+
+/* English flag */
+#btn-en::before {
+  background-image: url("https://flagcdn.com/w20/gb.png");
+}
+
+/* French flag */
+#btn-fr::before {
+  background-image: url("https://flagcdn.com/w20/fr.png");
+}
+
+/* ── PAGE HEADER ── */
+
+.page-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--rule);
+}
+
+.page-header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.75rem 2rem 1.5rem;
+}
+
+/* eyebrow */
 .header-eyebrow {
   font-size: 11px;
   font-weight: 600;
@@ -126,7 +151,7 @@ header {
   margin-bottom: 6px;
 }
 
-header h1,
+/* title */
 .page-header-inner h1 {
   font-family: 'Playfair Display', serif;
   font-size: clamp(22px, 5vw, 34px);
@@ -135,14 +160,13 @@ header h1,
   line-height: 1.2;
 }
 
-header p,
+/* description */
 .page-header-inner p {
   font-size: 14px;
   color: var(--ink-soft);
   margin-top: 8px;
   max-width: 580px;
 }
-
 /* ── MAIN LAYOUT ── */
 main {
   max-width: 900px;
@@ -195,8 +219,70 @@ footer {
 
 
 /* ════════════════════════════════════════
-   INDEX.HTML — PUNNETT SQUARES
+   GENETICS.HTML — PUNNETT SQUARES
 ════════════════════════════════════════ */
+
+.home-hero {
+  text-align: center;
+  padding: 3rem 1rem 1rem;
+}
+
+.home-hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+}
+
+.home-hero p {
+  color: var(--ink-soft);
+}
+
+/* TOOL GRID */
+
+.tool-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.tool-card {
+  display: block;
+  background: var(--cream);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all .2s ease;
+}
+
+.tool-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+.tool-icon {
+  font-size: 2rem;
+}
+
+.tool-title {
+  font-weight: 600;
+  margin-top: .5rem;
+}
+
+.tool-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.brand {
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--accent);
+  margin-right: 1rem;
+  font-size: 1.1rem;
+}
 
 .locus-card {
   background: var(--white);
