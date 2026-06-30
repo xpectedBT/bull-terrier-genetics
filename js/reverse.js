@@ -1,8 +1,63 @@
+/* ══════════════════════════════════════════
+   reverse.js — page logic for reverse.html
+   Depends on ui.js for: lang, setText, toggleClass
+══════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════
    STATE
 ═══════════════════════════════════════ */
 let selectedKey = null;
+
+/* ═══════════════════════════════════════
+   PAGE TEXT
+═══════════════════════════════════════ */
+const RT = {
+  en: {
+    eyebrow: 'Genotype Lookup · Coat Colour',
+    title: "Identify your dog's genotype",
+    desc: 'Select the coat colour and pattern that matches your dog.',
+
+    tagStep1: 'Step 1',
+    titleStep1: 'What does your dog look like?',
+    tagStep2: 'Step 2',
+    titleResults: 'Possible genotypes',
+
+    labelColoured: 'Coloured & coloured/white dogs',
+    labelWhite: 'White dogs',
+
+    emptyText: 'Select a coat colour above to see the possible genotypes.',
+    optionLabel: 'Option',
+    offspringTitle: 'Offspring potential:',
+    hint: 'These genotype options cannot always be distinguished visually.',
+
+    footer: 'Based on Colour in Bull Terriers – Tracey Butchart (2009).',
+
+    bannerSub(n) { return n === 1 ? '1 possible genotype' : `${n} possible genotypes`; },
+  },
+
+  fr: {
+    eyebrow: 'Recherche de génotype · Couleur de robe',
+    title: 'Identifier le génotype de votre chien',
+    desc: 'Sélectionnez la couleur et le patron de robe.',
+
+    tagStep1: 'Étape 1',
+    titleStep1: 'À quoi ressemble votre chien ?',
+    tagStep2: 'Étape 2',
+    titleResults: 'Génotypes possibles',
+
+    labelColoured: 'Chiens colorés & colorés/blancs',
+    labelWhite: 'Chiens blancs',
+
+    emptyText: 'Sélectionnez une couleur pour voir les génotypes.',
+    optionLabel: 'Option',
+    offspringTitle: 'Potentiel de descendance :',
+    hint: 'Ces options ne peuvent pas toujours être distinguées visuellement.',
+
+    footer: "D'après Colour in Bull Terriers – Tracey Butchart (2009).",
+
+    bannerSub(n) { return n === 1 ? '1 génotype possible' : `${n} génotypes possibles`; },
+  },
+};
 
 /* ══════════════════════════════════════════
    PHENOTYPE DATA
@@ -220,7 +275,6 @@ const PHENOTYPES = [
   },
 ];
 
-
 /* ═══════════════════════════════════════
    SELECT PHENOTYPE
 ═══════════════════════════════════════ */
@@ -233,6 +287,7 @@ function selectPheno(key) {
 
   renderResults();
 }
+window.selectPheno = selectPheno;
 
 /* ═══════════════════════════════════════
    GRID
@@ -243,15 +298,12 @@ function renderGrid(id, group) {
 
   const items = PHENOTYPES.filter(p => p.group === group);
 
+  // include data-key so selectPheno() can match the click back to a card,
+  // and re-apply the "selected" state so it survives a language switch
   container.innerHTML = items.map(p => `
-    <div class="pheno-card" onclick="selectPheno('${p.key}')">
-
+    <div class="pheno-card${p.key === selectedKey ? ' selected' : ''}" data-key="${p.key}" onclick="selectPheno('${p.key}')">
       <img src="${p.img}" alt="${p.label[lang]}" />
-
-      <div class="pheno-card-label">
-        ${p.label[lang]}
-      </div>
-
+      <div class="pheno-card-label">${p.label[lang]}</div>
     </div>
   `).join('');
 }
@@ -260,14 +312,13 @@ function renderGrid(id, group) {
    RESULTS
 ═══════════════════════════════════════ */
 function renderResults() {
-  const ui = UI[lang];
-
+  const t = RT[lang];
   const results = document.getElementById('geno-results');
   const hint = document.getElementById('hint-box');
   const banner = document.getElementById('selected-banner');
 
   if (!selectedKey) {
-    results.innerHTML = `<div class="empty-state">🐾<br>${ui.emptyText}</div>`;
+    results.innerHTML = `<div class="empty-state"><div class="icon">🐾</div><div>${t.emptyText}</div></div>`;
     if (banner) banner.classList.remove('visible');
     if (hint) hint.style.display = 'none';
     return;
@@ -275,29 +326,55 @@ function renderResults() {
 
   const pheno = PHENOTYPES.find(p => p.key === selectedKey);
 
+  if (banner) {
+    setText('banner-label', pheno.label[lang]);
+    setText('banner-sub', t.bannerSub(pheno.genotypes.length));
+    const bannerImg = document.getElementById('banner-img');
+    if (bannerImg) {
+      bannerImg.src = pheno.img;
+      bannerImg.alt = pheno.label[lang];
+    }
+    banner.classList.add('visible');
+  }
+
   results.innerHTML = pheno.genotypes.map((g, i) => `
     <div class="geno-option">
       <div class="geno-option-header">
-        <span class="geno-number">${ui.tagStep2} ${i + 1}</span>
+        <span class="geno-number">${t.optionLabel} ${i + 1}</span>
+        <span class="geno-formula">
+          ${g.pills.map(([code, series, sub]) => `<span class="locus-pill">${code}<span>${series}${sub ? ' · ' + sub : ''}</span></span>`).join('')}
+        </span>
       </div>
-      <div>${g.note[lang]}</div>
+      <div class="offspring-note"><strong>${t.offspringTitle}</strong> ${g.note[lang]}</div>
     </div>
   `).join('');
 
   if (hint) {
-    hint.textContent = ui.hint;
+    hint.textContent = t.hint;
     hint.style.display = 'block';
   }
 }
 
 /* ═══════════════════════════════════════
-   HOOK CALLED BY ui.js
+   FULL PAGE RENDER (hook called by ui.js)
 ═══════════════════════════════════════ */
 window.renderPage = function () {
+  const t = RT[lang];
+
+  setText('hdr-eyebrow', t.eyebrow);
+  setText('hdr-title', t.title);
+  setText('hdr-desc', t.desc);
+
+  setText('card-tag-step1', t.tagStep1);
+  setText('card-title-step1', t.titleStep1);
+  setText('card-tag-step2', t.tagStep2);
+  setText('card-title-step2', t.titleResults);
+  setText('label-coloured', t.labelColoured);
+  setText('label-white', t.labelWhite);
+
+  setText('footer-ref', t.footer);
+
   renderGrid('grid-coloured', 'coloured');
   renderGrid('grid-white', 'white');
   renderResults();
 };
-
-/* allow onclick in HTML */
-window.selectPheno = selectPheno;

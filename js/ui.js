@@ -1,69 +1,43 @@
-/* ═══════════════════════════════════════
-   GLOBAL STATE
-═══════════════════════════════════════ */
+/* ══════════════════════════════════════════
+   ui.js — SHARED ACROSS index.html, cross.html, reverse.html
+
+   This file owns only what every page has in common:
+   - the current language + localStorage persistence
+   - the EN/FR buttons and their active state
+   - the top-bar nav link text (nav-genetics / nav-litter / nav-reverse)
+
+   Everything page-specific (headline, body content, results…) lives in
+   that page's own script (genetics.js / cross.js / reverse.js), which
+   must expose a single hook: window.renderPage(). ui.js calls that hook
+   on load and on every language switch.
+══════════════════════════════════════════ */
+
 let lang = localStorage.getItem('btLang') || 'en';
 
-/* ═══════════════════════════════════════
-   TEXT (USED ON ALL PAGES)
-═══════════════════════════════════════ */
-const UI = {
+const NAV = {
   en: {
     navGenetics: 'Colour genetics',
-    navLitter: 'Simulate a litter',
-    navReverse: 'Identify genotype',
-
-    eyebrow: 'Genotype Lookup · Coat Colour',
-    title: "Identify your dog's genotype",
-    desc: 'Select the coat colour and pattern that matches your dog.',
-
-    tagStep1: 'Step 1',
-    titleStep1: 'What does your dog look like?',
-    tagStep2: 'Step 2',
-    titleResults: 'Possible genotypes',
-
-    labelColoured: 'Coloured & coloured/white dogs',
-    labelWhite: 'White dogs',
-
-    emptyText: 'Select a coat colour above to see the possible genotypes.',
-
-    offspringTitle: 'Offspring potential:',
-    hint: 'These genotype options cannot always be distinguished visually.',
-
-    footer: 'Based on Colour in Bull Terriers – Tracey Butchart (2009).'
+    navLitter:   'Simulate a litter',
+    navReverse:  'Identify genotype',
   },
-
   fr: {
     navGenetics: 'Génétique des couleurs',
-    navLitter: 'Simuler une portée',
-    navReverse: 'Identifier le génotype',
-
-    eyebrow: 'Recherche de génotype · Couleur de robe',
-    title: 'Identifier le génotype de votre chien',
-    desc: 'Sélectionnez la couleur et le patron de robe.',
-
-    tagStep1: 'Étape 1',
-    titleStep1: 'À quoi ressemble votre chien ?',
-    tagStep2: 'Étape 2',
-    titleResults: 'Génotypes possibles',
-
-    labelColoured: 'Chiens colorés & colorés/blancs',
-    labelWhite: 'Chiens blancs',
-
-    emptyText: 'Sélectionnez une couleur pour voir les génotypes.',
-
-    offspringTitle: 'Potentiel de descendance :',
-    hint: 'Ces options ne peuvent pas toujours être distinguées visuellement.',
-
-    footer: "D'après Colour in Bull Terriers – Tracey Butchart (2009)."
-  }
+    navLitter:   'Simuler une portée',
+    navReverse:  'Identifier le génotype',
+  },
 };
 
 /* ═══════════════════════════════════════
-   HELPERS
+   SMALL DOM HELPERS — reused by every page script
 ═══════════════════════════════════════ */
 function setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
+}
+
+function setHTML(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = value;
 }
 
 function toggleClass(id, cls, cond) {
@@ -80,40 +54,19 @@ function setLang(newLang) {
 
   toggleClass('btn-en', 'active', newLang === 'en');
   toggleClass('btn-fr', 'active', newLang === 'fr');
-
   document.documentElement.lang = newLang;
 
-  renderUI();
+  renderNav();
+
+  // page-specific script (genetics.js / cross.js / reverse.js) takes it from here
+  if (window.renderPage) window.renderPage();
 }
 
-/* ═══════════════════════════════════════
-   RENDER UI
-═══════════════════════════════════════ */
-function renderUI() {
-  const ui = UI[lang];
-
-  setText('nav-genetics', ui.navGenetics);
-  setText('nav-litter', ui.navLitter);
-  setText('nav-reverse', ui.navReverse);
-
-  setText('hdr-eyebrow', ui.eyebrow);
-  setText('hdr-title', ui.title);
-  setText('hdr-desc', ui.desc);
-
-  setText('card-tag-step1', ui.tagStep1);
-  setText('card-title-step1', ui.titleStep1);
-  setText('card-tag-step2', ui.tagStep2);
-  setText('card-title-step2', ui.titleResults);
-  setText('label-coloured', ui.labelColoured);
-  setText('label-white', ui.labelWhite);
-  setText('empty-text', ui.emptyText);
-
-  setText('footer-ref', ui.footer);
-
-  // call reverse.js if present
-  if (window.renderPage) {
-    window.renderPage();
-  }
+function renderNav() {
+  const n = NAV[lang];
+  setText('nav-genetics', n.navGenetics);
+  setText('nav-litter', n.navLitter);
+  setText('nav-reverse', n.navReverse);
 }
 
 /* ═══════════════════════════════════════
