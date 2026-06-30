@@ -612,3 +612,36 @@ table.punnett .corner { background: var(--cream); border-color: var(--cream-dark
 .selected-banner img { width: 64px; height: 46px; object-fit: contain; }
 .selected-banner-text { font-size: 13px; font-weight: 600; color: var(--ink); }
 .selected-banner-sub  { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+
+/* ════════════════════════════════════════
+   INDEX.HTML — GLOSSARY
+════════════════════════════════════════ */
+/* GLOSSARY */
+
+.glossary {
+  margin-top: 3rem;
+}
+
+.glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.glossary-item {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  background: var(--cream);
+}
+
+.glossary-term {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.glossary-desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
