@@ -94,7 +94,7 @@ const TRANSLATIONS = {
   fr: {
     eyebrow: 'Génétique · Couleur de robe',
     title: 'Hérédité des couleurs chez le Bull Terrier',
-    desc: 'Carrés de Punnett pour les quatre loci variables qui déterminent la couleur de robe chez le Bull Terrier. Tous les autres loci sont fixes dans la race.',
+    desc: 'Carrés de Punnett pour les quatre loci variables qui déterminent la couleur de robe chez le Bull Terrier. Tous les autres loci sont fixes dans la race. *loci =emplacements des marqueurs génétiques sur un chromosome',
     sectionLabel: 'Quatre loci variables',
     rulesLabel: 'Règles générales',
     parent1: 'Parent 1',
