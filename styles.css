@@ -392,3 +392,130 @@ table.punnett .corner { background: var(--cream); border-color: var(--cream-dark
   header, .page-header-inner { padding: 1.25rem 1rem 1rem; }
   .top-bar-inner { padding: 0.55rem 1rem; flex-wrap: wrap; }
 }
+
+
+/* ════════════════════════════════════════
+   REVERSE.HTML — GENOTYPE LOOKUP
+════════════════════════════════════════ */
+
+.pheno-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-top: .5rem;
+}
+.pheno-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: var(--cream);
+  border: 2px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: .85rem .6rem;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  text-align: center;
+}
+.pheno-card:hover { border-color: var(--accent); background: var(--accent-light); }
+.pheno-card.selected { border-color: var(--accent); background: var(--accent-light); box-shadow: 0 0 0 3px rgba(139,58,42,.15); }
+.pheno-card img { width: 100px; height: 72px; object-fit: contain; filter: drop-shadow(0 1px 3px rgba(0,0,0,.12)); pointer-events: none; }
+.pheno-card-label { font-size: 11px; font-weight: 600; color: var(--ink-soft); line-height: 1.4; }
+.pheno-card.selected .pheno-card-label { color: var(--accent); }
+
+/* ── results ── */
+.geno-results { display: grid; gap: 1rem; margin-top: .5rem; }
+.geno-option {
+  background: var(--cream);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.1rem;
+}
+.geno-option-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.geno-number {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--accent);
+  padding: 2px 8px;
+  border-radius: 20px;
+  flex-shrink: 0;
+}
+.geno-formula {
+  font-size: 14px;
+  font-style: italic;
+  font-weight: 600;
+  color: var(--ink);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.locus-pill {
+  font-size: 12px;
+  font-style: italic;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 2px 10px;
+  color: var(--ink);
+  font-weight: 600;
+}
+.locus-pill span {
+  font-weight: 400;
+  font-style: normal;
+  color: var(--ink-muted);
+  font-size: 10px;
+  margin-left: 4px;
+}
+.offspring-note {
+  font-size: 12px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--rule);
+}
+.offspring-note strong { color: var(--ink-soft); font-weight: 600; }
+
+.empty-state {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+.empty-state .icon { font-size: 2.5rem; margin-bottom: .5rem; }
+
+.hint-box {
+  background: var(--accent-light);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #5C2018;
+  line-height: 1.6;
+  margin-top: 1rem;
+}
+
+.selected-banner {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-md);
+  padding: .75rem 1rem;
+  margin-bottom: 1rem;
+}
+.selected-banner.visible { display: flex; }
+.selected-banner img { width: 64px; height: 46px; object-fit: contain; }
+.selected-banner-text { font-size: 13px; font-weight: 600; color: var(--ink); }
+.selected-banner-sub  { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
