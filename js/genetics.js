@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════
-   genetics.js — page logic for index.html
+   genetics.js — page logic for genetics.html
    Depends on ui.js for: lang, setText, setHTML
 ══════════════════════════════════════════ */
 
