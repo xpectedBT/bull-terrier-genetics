@@ -378,6 +378,7 @@ function renderResults() {
         </span>
       </div>
       <div class="offspring-note">
+      </div>
 
   <div class="geno-description">
     ${describeGenotype(g.pills)}
