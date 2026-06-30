@@ -285,6 +285,29 @@ function selectPheno(key) {
     c.classList.toggle('selected', c.dataset.key === key);
   });
 
+  renderResults();
+}
+window.selectPheno = selectPheno;
+
+/* ═══════════════════════════════════════
+   GRID
+═══════════════════════════════════════ */
+function renderGrid(id, group) {
+  const container = document.getElementById(id);
+  if (!container) return;
+
+  const items = PHENOTYPES.filter(p => p.group === group);
+
+  // include data-key so selectPheno() can match the click back to a card,
+  // and re-apply the "selected" state so it survives a language switch
+  container.innerHTML = items.map(p => `
+    <div class="pheno-card${p.key === selectedKey ? ' selected' : ''}" data-key="${p.key}" onclick="selectPheno('${p.key}')">
+      <img src="${p.img}" alt="${p.label[lang]}" />
+      <div class="pheno-card-label">${p.label[lang]}</div>
+    </div>
+  `).join('');
+}
+
 /* ═══════════════════════════════════════
    DESCRIBE GENOTYPE
 ═══════════════════════════════════════ */  
@@ -315,29 +338,6 @@ function describeGenotype(pills) {
   });
 
   return parts.join(', ');
-}
-
-  renderResults();
-}
-window.selectPheno = selectPheno;
-
-/* ═══════════════════════════════════════
-   GRID
-═══════════════════════════════════════ */
-function renderGrid(id, group) {
-  const container = document.getElementById(id);
-  if (!container) return;
-
-  const items = PHENOTYPES.filter(p => p.group === group);
-
-  // include data-key so selectPheno() can match the click back to a card,
-  // and re-apply the "selected" state so it survives a language switch
-  container.innerHTML = items.map(p => `
-    <div class="pheno-card${p.key === selectedKey ? ' selected' : ''}" data-key="${p.key}" onclick="selectPheno('${p.key}')">
-      <img src="${p.img}" alt="${p.label[lang]}" />
-      <div class="pheno-card-label">${p.label[lang]}</div>
-    </div>
-  `).join('');
 }
 
 /* ═══════════════════════════════════════
