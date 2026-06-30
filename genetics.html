@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bull Terrier Colour Genetics / Génétique des Couleurs chez le Bull Terrier</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+  <!-- Shared styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-inner">
+    <nav class="nav-links">
+      <a class="nav-link active" href="genetics.html" id="nav-genetics"></a>
+      <a class="nav-link" href="cross.html" id="nav-litter"></a>
+      <a class="nav-link" href="reverse.html" id="nav-reverse"></a>
+    </nav>
+    <div class="lang-group">
+      <span class="lang-label">Lang</span>
+      <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="btn-fr" onclick="setLang('fr')">FR</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="header-eyebrow" id="hdr-eyebrow"></div>
+    <h1 id="hdr-title"></h1>
+    <p id="hdr-desc"></p>
+  </div>
+</div>
+
+<main id="app"></main>
+
+<footer>
+  <div class="section-label" id="footer-rules-label"></div>
+  <div class="rules-grid" id="rules-grid"></div>
+  <hr class="divider" style="margin-top:1.5rem">
+  <p id="footer-ref"></p>
+</footer>
+
+<script src="js/ui.js"></script>
+<script src="js/genetics.js"></script>
+
+</body>
+</html>
