@@ -654,6 +654,6 @@ table.punnett .corner { background: var(--cream); border-color: var(--cream-dark
 }
 
 .tool-icon img {
-  width: 40px;   /* adjust size */
+  width: 60px;   /* adjust size */
   height: auto;
 }
