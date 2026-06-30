@@ -645,3 +645,15 @@ table.punnett .corner { background: var(--cream); border-color: var(--cream-dark
   font-size: 13px;
   color: var(--ink-soft);
 }
+
+.tool-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px; /* space between dogs */
+}
+
+.tool-icon img {
+  width: 20px;   /* adjust size */
+  height: auto;
+}
