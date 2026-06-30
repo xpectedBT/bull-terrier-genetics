@@ -572,6 +572,13 @@ table.punnett .corner { background: var(--cream); border-color: var(--cream-dark
 }
 .offspring-note strong { color: var(--ink-soft); font-weight: 600; }
 
+.geno-description {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
 .empty-state {
   text-align: center;
   padding: 2.5rem 1rem;
