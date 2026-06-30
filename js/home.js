@@ -30,6 +30,12 @@ const TRANSLATIONS = {
     termRecessive: "Recessive allele",
     descRecessive: "An allele that only expresses when two copies are present.",
 
+    termGenotype: "Genotype",
+    descGenotype: "The genetic makeup of a dog (its allele combinations).",
+
+    termPhenotype: "Phenotype",
+    descPhenotype: "The visible traits of a dog, such as coat colour and pattern.",
+
     footer: '© 2026 Bull Terrier Genetics. All rights reserved.'
   },
 
@@ -63,6 +69,12 @@ const TRANSLATIONS = {
 
     termRecessive: "Allèle récessif",
     descRecessive: "Ne s'exprime que s'il est présent en deux copies.",
+
+    termGenotype: "Génotype",
+    descGenotype: "Ensemble des allèles qui composent le patrimoine génétique du chien.",
+
+    termPhenotype: "Phénotype",
+    descPhenotype: "Caractéristiques visibles du chien, comme la couleur et le motif de la robe.",
 
     footer: '© 2026 Génétique du Bull Terrier. Tous droits réservés.'
   }
@@ -100,6 +112,12 @@ function renderPage() {
 
   setText('term-recessive', T.termRecessive);
   setText('desc-recessive', T.descRecessive);
+
+  setText('term-genotype', T.termGenotype);
+  setText('desc-genotype', T.descGenotype);
+
+  setText('term-phenotype', T.termPhenotype);
+  setText('desc-phenotype', T.descPhenotype);
 }
 
 window.renderPage = renderPage;
